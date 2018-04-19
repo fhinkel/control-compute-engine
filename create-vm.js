@@ -37,12 +37,10 @@ const config = {
   }],
   metadata: [
     {
-      'items': [
-        {
-          'key': 'startup-script',
-          'value': startup_script
-        }
-      ]
+      items: [{
+        key:'startup-script',
+        value: '#!/bin/bash\n          touch hello.js\n'
+      }]
     }
   ]
 };
