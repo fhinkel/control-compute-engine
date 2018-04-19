@@ -6,7 +6,7 @@ const compute = new Compute();
 
 // Create a new VM using the latest OS image of your choice.
 const zone = compute.zone('us-central1-a');
-const name = 'ubuntu-http-foo-1';
+const name = 'ubuntu-http-foo-' + Math.floor(Math.random() * 1000);
 
 // console.log(zone)
 
@@ -19,19 +19,36 @@ const name = 'ubuntu-http-foo-1';
 //   }
 // })
 
+
+const config = {
+  os: 'debian',
+  http: true,
+  https: true,
+  ssh: true,
+  tags: ['debian-server'], 
+  serviceAccounts: [{
+    kind: 'compute#serviceAccount',
+    email: 'default',
+    scopes: [
+      'https://www.googleapis.com/auth/devstorage.read_only'
+    ]
+  }]
+};
+
 zone
-  .createVM(name, {os: 'ubuntu'}).then(data => {
+  .createVM(name, config).then(data => {
     // `operation` lets you check the status of long-running tasks.
     const vm = data[0];
     const operation = data[1];
-    console.log('we got data');
+    console.log('We got data');
     console.log(data)
+    vm.start().catch(err => {
+      console.error('Could not start', err);
+    })
     return operation.promise();
   })
-  .then(() => {
-    console.log('created!');
-    // Virtual machine created!
-  })
+  .then()
   .catch(err => {
     console.error('ERROR:', err);
   });
+
