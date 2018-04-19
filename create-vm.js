@@ -19,20 +19,32 @@ const name = 'ubuntu-http-foo-' + Math.floor(Math.random() * 1000);
 //   }
 // })
 
+const startup_script = require('fs').readFileSync('setup_and_start_game.sh', 'utf8');
+console.log(startup_script);
 
 const config = {
   os: 'debian',
   http: true,
   https: true,
   ssh: true,
-  tags: ['debian-server'], 
+  tags: ['debian-server'],
   serviceAccounts: [{
     kind: 'compute#serviceAccount',
     email: 'default',
     scopes: [
       'https://www.googleapis.com/auth/devstorage.read_only'
     ]
-  }]
+  }],
+  metadata: [
+    {
+      'items': [
+        {
+          'key': 'startup-script',
+          'value': startup_script
+        }
+      ]
+    }
+  ]
 };
 
 zone
