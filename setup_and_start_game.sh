@@ -1,6 +1,6 @@
-#!/bin/bash
+#! /bin/bash
 
-touch hello.js
+touch hello-from-script.js
 
 # Get gameserver source code
 # gsutil -m cp {{ coud_storage }}/gameserver.tar.gz
