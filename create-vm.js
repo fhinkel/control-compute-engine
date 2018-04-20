@@ -1,6 +1,8 @@
 // Imports the Google Cloud client library
 const Compute = require('@google-cloud/compute');
 
+require('@google-cloud/debug-agent').start();
+
 // Creates a client
 const compute = new Compute();
 
@@ -9,7 +11,7 @@ const zone = compute.zone('us-central1-a');
 
 function startVM(cb) {
   const name = 'ubuntu-http-foo-' + Math.floor(Math.random() * 1000);
-
+  console.log("this is the future name: " + name);
   // todo(fhinkel): use async await, Node 8 should be supported
   // const startup_script = require('fs').readFileSync('./setup_and_start_game.sh', 'utf8');
   // console.log(startup_script);
@@ -49,6 +51,7 @@ function startVM(cb) {
         if (err) {
           console.log('error getting vm');
         }
+
         const ip = apiResponse.networkInterfaces[0].accessConfigs[0].natIP;
         console.log(ip);
         cb(ip);
@@ -58,9 +61,8 @@ function startVM(cb) {
     })
     return apiResponse.promise();
   })
-  .then()
   .catch(err => {
-    console.error('ERROR:', err);
+    console.error('ERROR: connection did not work', err);
   });
 }
 
@@ -91,7 +93,7 @@ server.listen(PORT, () => {
 })
 
 app.get('/', (req, res) => {
-  console.log('sombody connected');
+  console.log('somebody connected');
   startVM(function(ip){
     res.end("Hello, your lucky ip is " + ip + ":8080")
   });

@@ -5,6 +5,7 @@
   "main": "create-vm.js",
   "dependencies": {
     "@google-cloud/compute": "^0.10.0",
+    "@google-cloud/debug-agent": "^2.5.0",
     "express": "^4.16.3",
     "socket.io": "^2.1.0"
   },
