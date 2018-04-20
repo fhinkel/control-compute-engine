@@ -45,17 +45,18 @@ function startVM(cb) {
     const create_operation = data[1];
     const create_apiResponse = data[2];
     create_operation.on('complete', function() {
-      vm.start().then((data) => {
+      vm.start().then(data => {
         const operation = data[0];
         const apiResponse = data[1];
         operation.on('complete', function() {
+          console.log("Start is complete.")
           vm.get(function(err, vm, apiResponse){
             if (err) {
               console.log('error getting vm');
             }
     
             const ip = apiResponse.networkInterfaces[0].accessConfigs[0].natIP;
-            console.log(ip);
+            console.log("And this is the ip: " + ip);
             cb(ip);
           })
         })
@@ -67,7 +68,7 @@ function startVM(cb) {
     })
 
 
-    return create_apiResponse.promise();
+    // return create_apiResponse.promise();
   })
   .catch(err => {
     console.error('ERROR: connection did not work', err);
