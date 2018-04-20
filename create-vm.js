@@ -19,15 +19,16 @@ const name = 'ubuntu-http-foo-' + Math.floor(Math.random() * 1000);
 //   }
 // })
 
+// todo(fhinkel): use async await, Node 8 should be supported
 const startup_script = require('fs').readFileSync('setup_and_start_game.sh', 'utf8');
 console.log(startup_script);
 
 const config = {
-  os: 'debian',
+  os: 'ubuntu',
   http: true,
   https: true,
   ssh: true,
-  tags: ['debian-server'],
+  tags: ['node-server'],
   serviceAccounts: [{
     kind: 'compute#serviceAccount',
     email: 'default',
