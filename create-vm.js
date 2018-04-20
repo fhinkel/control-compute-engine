@@ -7,11 +7,11 @@ const compute = new Compute();
 // Create a new VM using the latest OS image of your choice.
 const zone = compute.zone('us-central1-a');
 
-function startVM() {
+function startVM(cb) {
   const name = 'ubuntu-http-foo-' + Math.floor(Math.random() * 1000);
 
   // todo(fhinkel): use async await, Node 8 should be supported
-  const startup_script = require('fs').readFileSync('setup_and_start_game.sh', 'utf8');
+  // const startup_script = require('fs').readFileSync('./setup_and_start_game.sh', 'utf8');
   // console.log(startup_script);
   
   const config = {
@@ -40,13 +40,23 @@ function startVM() {
   zone.createVM(name, config).then(data => {
     // `operation` lets you check the status of long-running tasks.
     const vm = data[0];
-    const operation = data[1];
+    const apiResponse = data[1];
     console.log('We got data for ' + vm.name);
     // console.log(data)
-    vm.start().catch(err => {
+    vm.start().then(() => {
+      console.log(vm.name);
+      vm.get(function(err, vm, apiResponse){
+        if (err) {
+          console.log('error getting vm');
+        }
+        const ip = apiResponse.networkInterfaces[0].accessConfigs[0].natIP;
+        console.log(ip);
+        cb(ip);
+      })
+    }).catch(err => {
       console.error('Could not start', err);
     })
-    return operation.promise();
+    return apiResponse.promise();
   })
   .then()
   .catch(err => {
@@ -81,8 +91,11 @@ server.listen(PORT, () => {
   console.log('Press Ctrl+C to quit.');
 })
 
-server.on('connection', () => {
+app.get('/', (req, res) => {
   console.log('sombody connected');
-  startVM();
+  startVM(function(ip){
+    res.end("Hello, your lucky ip is " + ip + ":8080")
+  });
 })
+
 
