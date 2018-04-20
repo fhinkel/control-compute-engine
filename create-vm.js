@@ -74,7 +74,6 @@ const path = require('path')
 const app = express();
 var server = require('http').Server(app);
 
-var io = require('socket.io')(server);
 
 const ID = Math.floor(Math.random() * 1000);
 app.use(express.static(path.join(__dirname, 'public')))
