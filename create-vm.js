@@ -42,23 +42,31 @@ function startVM(cb) {
   zone.createVM(name, config).then(data => {
     // `operation` lets you check the status of long-running tasks.
     const vm = data[0];
-    const apiResponse = data[1];
-    console.log('We got data for ' + vm.name);
-    // console.log(data)
-    vm.start().then(() => {
-      console.log(vm.name);
-      vm.get(function(err, vm, apiResponse){
-        if (err) {
-          console.log('error getting vm');
-        }
+    const create_operation = data[1];
+    const create_apiResponse = data[2];
+    create_operation.on('complete', function() {
+      vm.start().then((data) => {
+        const operation = data[0];
+        const apiResponse = data[1];
+        operation.on('complete', function() {
+          vm.get(function(err, vm, apiResponse){
+            if (err) {
+              console.log('error getting vm');
+            }
+    
+            const ip = apiResponse.networkInterfaces[0].accessConfigs[0].natIP;
+            console.log(ip);
+            cb(ip);
+          })
+        })
+        console.log(vm.name);
 
-        const ip = apiResponse.networkInterfaces[0].accessConfigs[0].natIP;
-        console.log(ip);
-        cb(ip);
+      }).catch(err => {
+        console.error('Could not start', err);
       })
-    }).catch(err => {
-      console.error('Could not start', err);
     })
+
+
     return apiResponse.promise();
   })
   .catch(err => {
