@@ -28,7 +28,7 @@ const config = {
   http: true,
   https: true,
   ssh: true,
-  tags: ['node-server'],
+  tags: ['node-server', 'https-server'],
   serviceAccounts: [{
     kind: 'compute#serviceAccount',
     email: 'default',
