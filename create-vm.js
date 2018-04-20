@@ -67,7 +67,7 @@ function startVM(cb) {
     })
 
 
-    return apiResponse.promise();
+    return create_apiResponse.promise();
   })
   .catch(err => {
     console.error('ERROR: connection did not work', err);
