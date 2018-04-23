@@ -95,6 +95,10 @@ app.get('/hello', (req, res) => {
 });
 
 io.on('connection', function(socket) {
+  
+  // send all the existing VMs
+  socket.emit('started', '127.0.0.1:8080');
+
   socket.on('start', function() {
     console.log('We should start now...');
     startVM(function(ip){
