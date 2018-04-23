@@ -99,7 +99,7 @@ io.on('connection', function(socket) {
     console.log('We should start now...');
     startVM(function(ip){
       console.log("Hello, your lucky ip is " + ip + ":8080")
-      socket.broadcast.emit('started', ip + ':8080');
+      socket.emit('started', ip + ':8080');
     });
   })
 })
