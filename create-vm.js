@@ -94,10 +94,30 @@ app.get('/hello', (req, res) => {
   res.status(200).send('Hello, world! This is robot #' + ID + '.').end();
 });
 
+function sendListOfVMs(socket) {
+  zone.getVMs().then( function(data) {
+    const vms = data[0];
+    console.log("So many vms: " + vms.length);
+
+    vms.forEach(function(vm) {
+      vm.get().then(data => {
+        const vm = data[0];
+        const apiResponse = data[1];
+        const ip = apiResponse.networkInterfaces[0].accessConfigs[0].natIP;
+        socket.emit('started', ip + ':8080');
+      }).catch(err=> console.log('Error getting VM data: ' + err))
+    })
+
+  }).catch(function(err){
+    console.log('Error, could not get list of VMs ' + err );
+  });
+
+}
+
 io.on('connection', function(socket) {
   
   // send all the existing VMs
-  socket.emit('started', '127.0.0.1:8080');
+  sendListOfVMs(socket);
 
   socket.on('start', function() {
     console.log('We should start now...');
