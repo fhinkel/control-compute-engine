@@ -120,10 +120,8 @@ io.on('connection', function(socket) {
   sendListOfVMs(socket);
 
   socket.on('start', function() {
-    console.log('We should start now...');
     startVM(function(ip){
-      console.log("Hello, your lucky ip is " + ip + ":8080")
-      socket.emit('started', ip + ':8080');
+      io.sockets.emit('started', ip + ':8080');
     });
   })
 })
