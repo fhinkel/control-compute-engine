@@ -29,6 +29,7 @@ function startVM(cb) {
         'https://www.googleapis.com/auth/devstorage.read_only'
       ]
     }],
+    machineType: 'g1-small',
     metadata: [
       {
         items: [{
