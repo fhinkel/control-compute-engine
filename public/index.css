@@ -2,7 +2,7 @@ body {
     background-image: url("battleship.jpg");
     background-repeat: no-repeat;
     /* opacity: 0.2; */
-    background: rgba(76, 175, 80, 0.2);  20% opacity
+    background: rgba(76, 175, 80, 0.2); 
 }
 
 body p {

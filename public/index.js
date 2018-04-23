@@ -1,1 +1,4 @@
-// alert('hello')
+
+document.getElementById('start').onclick = function() {
+    alert('hello')
+};
