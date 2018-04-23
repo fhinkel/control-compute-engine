@@ -85,7 +85,7 @@ const path = require('path')
 
 const app = express();
 var server = require('http').Server(app);
-
+var io = require('socket.io')(server);
 
 const ID = Math.floor(Math.random() * 1000);
 app.use(express.static(path.join(__dirname, 'public')))
@@ -94,6 +94,15 @@ app.get('/hello', (req, res) => {
   res.status(200).send('Hello, world! This is robot #' + ID + '.').end();
 });
 
+io.on('connection', function(socket) {
+  socket.on('start', function() {
+    console.log('We should start now...');
+    startVM(function(ip){
+      console.log("Hello, your lucky ip is " + ip + ":8080")
+      socket.broadcast.emit('started', ip + ':8080');
+    });
+  })
+})
 
 // Start the server
 const PORT = process.env.PORT || 8080;
@@ -105,10 +114,8 @@ server.listen(PORT, () => {
 
 
 app.get('/', (req, res) => {
+  // This should not be called because we serve index.html statically.
   console.log('somebody connected');
-  startVM(function(ip){
-    res.end("Hello, your lucky ip is " + ip + ":8080")
-  });
 })
 
 
