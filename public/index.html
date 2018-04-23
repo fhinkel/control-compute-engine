@@ -8,19 +8,23 @@
 <body>
 
     <p>
-        <h1>Gameserver controller</h1>
-        You can control the gameservers here. Start more GCP Compute engines or connect to an existing one.
+        <h1>Gameserver Controller Station</h1>
+        <p>Start new gameservers, join existing ones.</p>
+
+
+        <p>You can control the gameservers here. Start more GCP Compute engines or connect to an existing one.
+        Hosted on AppEngine Standard with Node.js 8 runtime. Every gameserver is its own Compute Engines, allowing for maximum flexibility in configuration. </p>
         <br>
 
-        <button id='startButton'>Start a new Gameserver.</button>
+        <button id='startButton'>Start new Gameserver</button>
 
         <br>
-        <br> Currently running
+        <br> Currently running gameservers:
 
         <ul id='running'></ul>
 
 
-        <br> By
+        <br> 2018, by
         <a href="https://github.com/fhinkel/">@fhinkel</a>
 
     </p>
