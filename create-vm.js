@@ -18,7 +18,7 @@ function startVM(cb) {
   // console.log(startup_script);
 
   const config = {
-    os: 'ubuntu',
+    os: 'debian',
     http: true,
     https: true,
     ssh: true,

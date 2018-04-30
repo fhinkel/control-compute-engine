@@ -1,9 +1,5 @@
 #! /bin/bash
 
-cd /home/fhinkel_demo 
-
-touch hello-from-script.js
-
 # Get gameserver source code
 # gsutil -m cp {{ coud_storage }}/gameserver.tar.gz
 gsutil -m cp gs://battleship/gameserver.tar.gz .
