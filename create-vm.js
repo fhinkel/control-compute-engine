@@ -1,5 +1,6 @@
 // Imports the Google Cloud client library
 const Compute = require('@google-cloud/compute');
+const http = require('http');
 
 require('@google-cloud/debug-agent').start();
 
@@ -15,7 +16,7 @@ function startVM(cb) {
   // todo(fhinkel): use async await, Node 8 should be supported
   // const startup_script = require('fs').readFileSync('./setup_and_start_game.sh', 'utf8');
   // console.log(startup_script);
-  
+
   const config = {
     os: 'ubuntu',
     http: true,
@@ -39,27 +40,37 @@ function startVM(cb) {
       }
     ]
   };
-  
+
   zone.createVM(name, config).then(data => {
     // `operation` lets you check the status of long-running tasks.
     const vm = data[0];
     const create_operation = data[1];
     const create_apiResponse = data[2];
-    create_operation.on('complete', function() {
+    create_operation.on('complete', function () {
       vm.start().then(data => {
         const operation = data[0];
         const apiResponse = data[1];
-        operation.on('complete', function() {
-          console.log("Start is complete.")
-          vm.get(function(err, vm, apiResponse){
-            if (err) {
-              console.log('error getting vm');
-            }
-    
-            const ip = apiResponse.networkInterfaces[0].accessConfigs[0].natIP;
-            console.log("And this is the ip: " + ip);
-            cb(ip);
+        operation.on('complete', function () {
+          console.log("Start is complete. Now installing Node and starting server.");
+          vm.getMetadata().then(data => {
+            const metadata = data[0];
+            const ip = metadata['networkInterfaces'][0]['accessConfigs'][0]['natIP'];
+            console.log(name + ' created, running at ' + ip);
+            console.log('Waiting for startup...')
+
+            const timer = setInterval(ip => {
+              http.get(ip, res => {
+                const { statusCode } = res
+                if (statusCode === 200) {
+                  clearTimeout(timer);
+                  console.log('Ready!');
+                  cb(ip);
+                }
+
+              }).on('error', () => process.stdout.write('.'))
+            }, 2000, 'http://' + ip)
           })
+            .catch(err => console.error(err))
         })
         console.log(vm.name);
 
@@ -71,9 +82,9 @@ function startVM(cb) {
 
     // return create_apiResponse.promise();
   })
-  .catch(err => {
-    console.error('ERROR: connection did not work', err);
-  });
+    .catch(err => {
+      console.error('ERROR: connection did not work', err);
+    });
 }
 
 
@@ -95,32 +106,32 @@ app.get('/hello', (req, res) => {
 });
 
 function sendListOfVMs(socket) {
-  zone.getVMs().then( function(data) {
+  zone.getVMs().then(function (data) {
     const vms = data[0];
     console.log("So many vms: " + vms.length);
 
-    vms.forEach(function(vm) {
+    vms.forEach(function (vm) {
       vm.get().then(data => {
         const vm = data[0];
         const apiResponse = data[1];
         const ip = apiResponse.networkInterfaces[0].accessConfigs[0].natIP;
         socket.emit('started', ip + ':8080');
-      }).catch(err=> console.log('Error getting VM data: ' + err))
+      }).catch(err => console.log('Error getting VM data: ' + err))
     })
 
-  }).catch(function(err){
-    console.log('Error, could not get list of VMs ' + err );
+  }).catch(function (err) {
+    console.log('Error, could not get list of VMs ' + err);
   });
 
 }
 
-io.on('connection', function(socket) {
-  
+io.on('connection', function (socket) {
+
   // send all the existing VMs
   sendListOfVMs(socket);
 
-  socket.on('start', function() {
-    startVM(function(ip){
+  socket.on('start', function () {
+    startVM(function (ip) {
       io.sockets.emit('started', ip + ':8080');
     });
   })
