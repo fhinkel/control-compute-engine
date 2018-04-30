@@ -19,7 +19,8 @@ socket.on('started', function(msg) {
     document.getElementById('startButton').innerText = 'Start new Gameserver';
 
     var vm = document.createElement('a');
-    vm.setAttribute('href',  msg);
+    console.log(msg);
+    vm.setAttribute('href', 'http://' + msg);
     vm.setAttribute('target', '_blank');
     vm.appendChild(document.createTextNode(msg));
 
