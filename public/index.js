@@ -19,9 +19,9 @@ socket.on('started', function(msg) {
     document.getElementById('startButton').innerText = 'Start new Gameserver';
 
     var vm = document.createElement('a');
-    vm.setAttribute('href', 'http://' + msg);
+    vm.setAttribute('href',  msg);
     vm.setAttribute('target', '_blank');
-    vm.appendChild(document.createTextNode('http://' + msg));
+    vm.appendChild(document.createTextNode(msg));
 
     var icon = document.createElement('i');
     icon.setAttribute('class', "material-icons mdl-list__item-icon");

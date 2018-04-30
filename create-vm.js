@@ -58,13 +58,13 @@ function startVM(cb) {
             console.log(name + ' created, running at ' + ip);
             console.log('Waiting for startup...')
 
-            const timer = setInterval(ip => {
-              http.get(ip, res => {
+            const timer = setInterval(address => {
+              http.get(address, res => {
                 const { statusCode } = res
                 if (statusCode === 200) {
                   clearTimeout(timer);
                   console.log('Ready!');
-                  cb(ip);
+                  cb(address);
                 }
 
               }).on('error', () => process.stdout.write('.'))
@@ -131,8 +131,8 @@ io.on('connection', function (socket) {
   sendListOfVMs(socket);
 
   socket.on('start', function () {
-    startVM(function (ip) {
-      io.sockets.emit('started', ip + ':8080');
+    startVM(function (address) {
+      io.sockets.emit('started', address);
     });
   })
 })
