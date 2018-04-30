@@ -11,7 +11,7 @@ const compute = new Compute();
 const zone = compute.zone('us-central1-a');
 
 function startVM(cb) {
-  const name = 'ubuntu-http-foo-' + Math.floor(Math.random() * 1000);
+  const name = 'debian-http-battleship-' + Math.floor(Math.random() * 1000);
   console.log("this is the future name: " + name);
   // todo(fhinkel): use async await, Node 8 should be supported
   // const startup_script = require('fs').readFileSync('./setup_and_start_game.sh', 'utf8');
@@ -68,7 +68,7 @@ function startVM(cb) {
                 }
 
               }).on('error', () => process.stdout.write('.'))
-            }, 2000, 'http://' + ip)
+            }, 2000, 'http://' + ip + ':8080')
           })
             .catch(err => console.error(err))
         })
